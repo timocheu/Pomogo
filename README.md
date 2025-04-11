@@ -1,2 +1,2 @@
 # Pomogo
-Pomodoro app made in go &lt;3
+Pomodoro cli-app made in go &lt;3
