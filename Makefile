@@ -7,6 +7,7 @@ BINARY=pomogo
 all: $(BINARY)
 
 $(BINARY): 
+	go mod tidy
 	$(BUILD) $(GFLAGS) -o $@ $(MAIN) 
 
 clean: 
