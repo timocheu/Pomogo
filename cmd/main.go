@@ -20,7 +20,7 @@ func NewSession(duration int) *progressbar.ProgressBar {
 		progressbar.OptionUseANSICodes(false),
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionSetWidth(30),
-		progressbar.OptionSetElapsedTime(false),
+		progressbar.OptionSetPredictTime(false),
 		progressbar.OptionSetTheme(progressbar.Theme{
 			Saucer:         "[red]\uEE04[reset]", // 
 			SaucerHead:     "[red]\uEE04[reset]", // 
@@ -47,7 +47,7 @@ func NewRest(duration int) *progressbar.ProgressBar {
 		progressbar.OptionUseANSICodes(false),
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionSetWidth(15),
-		progressbar.OptionSetElapsedTime(false),
+		progressbar.OptionSetPredictTime(false),
 		progressbar.OptionSetTheme(progressbar.Theme{
 			Saucer:         "[blue]\uEE04[reset]", // 
 			SaucerHead:     "[blue]\uEE04[reset]", // 
@@ -56,6 +56,9 @@ func NewRest(duration int) *progressbar.ProgressBar {
 			BarStartFilled: "[blue]\uEE03[reset]", // 
 			BarEnd:         "[blue]\uEE02[reset]", // 
 			BarEndFilled:   "[blue]\uEE05[reset]", // 
+		}),
+		progressbar.OptionOnCompletion(func() {
+			fmt.Println()
 		}),
 	)
 
@@ -121,9 +124,11 @@ func main() {
 	}
 
 	// Stop if the program if its only asking help
-	arg := os.Args[1]
-	if arg == "-h" || arg == "--help" {
-		return
+	if len(os.Args) > 1 {
+		arg := os.Args[1]
+		if arg == "-h" || arg == "--help" {
+			return
+		}
 	}
 
 	// Create a new session && rest
