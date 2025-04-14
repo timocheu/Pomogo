@@ -72,22 +72,18 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 	option := make(chan string)
 	playing := make(chan bool)
 
-	// TODO: Optimize/Refactor the conversion
-	progressBarMax := duration * 60
+	// TODO: Fix logic, dont need to use time scale, use ticker
 	// Convert Minutes to miliseconds
-	minutes := time.Duration(duration) * time.Minute
 	// Get the interval for second
-	interval := minutes / (time.Duration(progressBarMax) * time.Second)
 	t := time.Now()
-
 	go func() {
-		for i := 0; i < progressBarMax; i++ {
+		for i := 0; i < duration*60; i++ {
 			select {
 			case cmd := <-option:
 				switch cmd {
 				case "P":
 					// Display Option to resume
-					fmt.Println("▄▄▄ [PAUSED] ▄▄▄")
+					fmt.Println("\n▄▄▄ [PAUSED] ▄▄▄")
 					fmt.Println("\033[31m[Y]\033[0m - Resume")
 
 					// Block
@@ -111,7 +107,7 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 				bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
 				bar.Add(1)
 			}
-			time.Sleep(time.Second * interval)
+			time.Sleep(time.Second)
 		}
 	}()
 
