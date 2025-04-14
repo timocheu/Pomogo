@@ -72,8 +72,8 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 	minutes := time.Duration(duration) * time.Minute
 	// Get the interval for second
 	interval := minutes / (time.Duration(progressBarMax) * time.Second)
-
 	t := time.Now()
+
 	for i := 0; i < progressBarMax; i++ {
 		now := time.Since(t)
 		m := int(now.Minutes())
@@ -87,7 +87,6 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 }
 
 func main() {
-
 	cmd := &cli.Command{
 		Name:  "pomogo",
 		Usage: "Pomodoro cli-app made in go.",
@@ -113,7 +112,12 @@ func main() {
 			fmt.Println("▐▌ ▐▌ ▐▌▐▌ ▐▌▐▛▚▞▜▌▐▌ ▐▌▐▌   ▐▌ ▐▌ ")
 			fmt.Println("▐▌ ▐▛▀▘ ▐▌ ▐▌▐▌  ▐▌▐▌ ▐▌▐▌▝▜▌▐▌ ▐▌ ")
 			fmt.Println("▐▌ ▐▌   ▝▚▄▞▘▐▌  ▐▌▝▚▄▞▘▝▚▄▞▘▝▚▄▞▘ ")
-			fmt.Println("▗▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄")
+			fmt.Println("▗▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n")
+
+			fmt.Println("\033[31m[P]\033[0m - Pause")
+			fmt.Println("\033[34m[C]\033[0m - Cancel")
+			fmt.Println("[R] - Reset")
+			fmt.Println("--- --- --- --- --- --- --- ")
 
 			return nil
 		},
