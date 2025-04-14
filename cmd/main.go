@@ -88,14 +88,20 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 				case "P":
 					// Display Option to resume
 					fmt.Println("▄▄▄ [PAUSED] ▄▄▄")
-					fmt.Println("\033[31m[P]\033[0m - Resume")
+					fmt.Println("\033[31m[Y]\033[0m - Resume")
 
+					// Block
 					// Ask for input
-					var cmd string
-					fmt.Printf("Enter: ")
-					fmt.Scanln(&cmd)
-					if cmd == "P" || cmd == "p" {
-						break
+					for {
+						scan := bufio.NewScanner(os.Stdin)
+						if scan.Scan() {
+							cmd := scan.Text()
+							if cmd == "Y" || cmd == "y" {
+								break
+							} else {
+								fmt.Println("Error: Invalid command")
+							}
+						}
 					}
 				}
 			default:
