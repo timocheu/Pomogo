@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/schollz/progressbar/v3"
@@ -67,6 +69,10 @@ func NewRest(duration int) *progressbar.ProgressBar {
 
 // Duration is in "MINUTES"
 func Play(bar *progressbar.ProgressBar, duration int, color string) {
+	option := make(chan string)
+	playing := make(chan bool)
+
+	// TODO: Optimize/Refactor the conversion
 	progressBarMax := duration * 60
 	// Convert Minutes to miliseconds
 	minutes := time.Duration(duration) * time.Minute
@@ -74,16 +80,45 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 	interval := minutes / (time.Duration(progressBarMax) * time.Second)
 	t := time.Now()
 
-	for i := 0; i < progressBarMax; i++ {
-		now := time.Since(t)
-		m := int(now.Minutes())
-		s := int(now.Seconds())
+	go func() {
+		for i := 0; i < progressBarMax; i++ {
+			select {
+			case cmd := <-option:
+				switch cmd {
+				case "P":
+					// Display Option to resume
+					fmt.Println("▄▄▄ [PAUSED] ▄▄▄")
+					fmt.Println("\033[31m[P]\033[0m - Resume")
 
-		bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
-		bar.Add(1)
+					// Ask for input
+					var cmd string
+					fmt.Printf("Enter: ")
+					fmt.Scanln(&cmd)
+					if cmd == "P" || cmd == "p" {
+						break
+					}
+				}
+			default:
+				now := time.Since(t)
+				m := int(now.Minutes())
+				s := int(now.Seconds())
+				bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
+				bar.Add(1)
+			}
+			time.Sleep(time.Second * interval)
+		}
+	}()
 
-		time.Sleep(time.Second * interval)
-	}
+	go func() {
+		scanner := bufio.NewScanner(os.Stdin)
+		for {
+			if scanner.Scan() {
+				cmd := strings.TrimSpace(scanner.Text())
+				option <- cmd
+			}
+		}
+	}()
+	<-playing
 }
 
 func main() {
