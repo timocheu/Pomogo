@@ -80,7 +80,15 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 			select {
 			case cmd := <-option:
 				switch cmd {
-				case "P":
+				case "r":
+					bar.Reset()
+					timeSession = time.Time{}
+					i = 0
+					fmt.Println("Reset successfully...")
+				case "c":
+					fmt.Println("Canceled ...")
+					return
+				case "p":
 					// Display Option to resume
 					fmt.Println("\n▄▄▄ [PAUSED] ▄▄▄")
 					fmt.Println("\033[31m[Y]\033[0m - Resume")
@@ -90,8 +98,8 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 					for {
 						scan := bufio.NewScanner(os.Stdin)
 						if scan.Scan() {
-							cmd := scan.Text()
-							if cmd == "Y" || cmd == "y" {
+							cmd := strings.TrimSpace(strings.ToLower(scan.Text()))
+							if cmd == "y" {
 								break
 							} else {
 								fmt.Println("Error: Invalid command")
@@ -116,7 +124,7 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 		scanner := bufio.NewScanner(os.Stdin)
 		for {
 			if scanner.Scan() {
-				cmd := strings.TrimSpace(scanner.Text())
+				cmd := strings.TrimSpace(strings.ToLower(scanner.Text()))
 				option <- cmd
 			}
 		}
