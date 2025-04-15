@@ -69,56 +69,9 @@ func NewRest(duration int) *progressbar.ProgressBar {
 
 // Duration is in "MINUTES"
 func Play(bar *progressbar.ProgressBar, duration int, color string) {
+	// blank time 00:00:00
+	timeSession := time.Time{}
 	option := make(chan string)
-	playing := make(chan bool)
-
-	go func() {
-		// blank time 00:00:00
-		timeSession := time.Time{}
-
-		for i := 0; i < duration*60; i++ {
-			select {
-			case cmd := <-option:
-				switch cmd {
-				case "r":
-					bar.Reset()
-					timeSession = time.Time{}
-					i = 0
-					fmt.Println("Reset successfully...")
-				case "c":
-					fmt.Println("Canceled ...")
-					return
-				case "p":
-					// Display Option to resume
-					fmt.Println("\n▄▄▄ [PAUSED] ▄▄▄")
-					fmt.Println("\033[31m[Y]\033[0m - Resume")
-
-					// Block the ticker
-					// Ask for input
-					for {
-						scan := bufio.NewScanner(os.Stdin)
-						if scan.Scan() {
-							cmd := strings.TrimSpace(strings.ToLower(scan.Text()))
-							if cmd == "y" {
-								break
-							} else {
-								fmt.Println("Error: Invalid command")
-							}
-						}
-					}
-				}
-			default:
-				// Add second to the timer
-				timeSession = timeSession.Add(time.Second)
-
-				m := int(timeSession.Minute())
-				s := int(timeSession.Second())
-				bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
-				bar.Add(1)
-			}
-			time.Sleep(time.Second)
-		}
-	}()
 
 	go func() {
 		scanner := bufio.NewScanner(os.Stdin)
@@ -129,7 +82,47 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 			}
 		}
 	}()
-	<-playing
+
+	for i := 0; i < duration*60; i++ {
+		select {
+		case cmd := <-option:
+			switch cmd {
+			case "r":
+				bar.Reset()
+				timeSession = time.Time{}
+				i = 0
+				fmt.Println("Reset successful...")
+			case "c":
+				fmt.Println("Canceled...")
+				return
+			case "p":
+				// Display Option to resume
+				fmt.Println("\n▄▄▄ [PAUSED] ▄▄▄")
+				fmt.Println("\033[31m[Y]\033[0m - Resume")
+
+				// Block the ticker
+				// Ask for input
+				var cmd string
+				fmt.Scan(&cmd)
+				if strings.TrimSpace(strings.ToLower(cmd)) == "y" {
+					fmt.Println("Resuming...")
+					break
+				} else {
+					fmt.Println("Error: Invalid command")
+				}
+			}
+		default:
+			// Add second to the timer
+			timeSession = timeSession.Add(time.Second)
+
+			m := int(timeSession.Minute())
+			s := int(timeSession.Second())
+			bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
+			bar.Add(1)
+		}
+		time.Sleep(time.Second)
+	}
+
 }
 
 func main() {
