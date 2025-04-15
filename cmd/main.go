@@ -48,7 +48,7 @@ func NewRest(duration int) *progressbar.ProgressBar {
 	session := progressbar.NewOptions(duration*60,
 		progressbar.OptionUseANSICodes(false),
 		progressbar.OptionEnableColorCodes(true),
-		progressbar.OptionSetWidth(15),
+		progressbar.OptionSetWidth(10),
 		progressbar.OptionSetPredictTime(false),
 		progressbar.OptionSetTheme(progressbar.Theme{
 			Saucer:         "[blue]\uEE04[reset]", // 
