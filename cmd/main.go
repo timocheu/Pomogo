@@ -72,11 +72,10 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 	option := make(chan string)
 	playing := make(chan bool)
 
-	// TODO: Fix logic, dont need to use time scale, use ticker
-	// Convert Minutes to miliseconds
-	// Get the interval for second
-	t := time.Now()
 	go func() {
+		// blank time 00:00:00
+		timeSession := time.Time{}
+
 		for i := 0; i < duration*60; i++ {
 			select {
 			case cmd := <-option:
@@ -86,7 +85,7 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 					fmt.Println("\n▄▄▄ [PAUSED] ▄▄▄")
 					fmt.Println("\033[31m[Y]\033[0m - Resume")
 
-					// Block
+					// Block the ticker
 					// Ask for input
 					for {
 						scan := bufio.NewScanner(os.Stdin)
@@ -101,9 +100,11 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 					}
 				}
 			default:
-				now := time.Since(t)
-				m := int(now.Minutes())
-				s := int(now.Seconds())
+				// Add second to the timer
+				timeSession = timeSession.Add(time.Second)
+
+				m := int(timeSession.Minute())
+				s := int(timeSession.Second())
 				bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
 				bar.Add(1)
 			}
