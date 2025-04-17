@@ -41,7 +41,7 @@ func NewSession(duration int) *progressbar.ProgressBar {
 }
 
 // The Duration is in "Minutes"
-func NewRest(duration int) *progressbar.ProgressBar {
+func NewBreak(duration int) *progressbar.ProgressBar {
 	// Convert duration into seconds
 	// We want to update the bar by every second, so we have to
 	//   multiply it by second
@@ -119,13 +119,12 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 			// Add second to the timer
 			timeSession = timeSession.Add(time.Second)
 
-			m := int(timeSession.Minute())
-			s := int(timeSession.Second())
-			bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
+			minutes := int(timeSession.Minute())
+			seconds := int(timeSession.Second())
+			bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] %s", color, minutes, seconds))
 			bar.Add(1)
 			time.Sleep(time.Second)
 		}
-
 	}
 }
 
@@ -187,7 +186,7 @@ func main() {
 
 	// Create a new session && rest
 	session := NewSession(int(cmd.Int("session")))
-	rest := NewRest(int(cmd.Int("rest")))
+	rest := NewBreak(int(cmd.Int("rest")))
 
 	// Play
 	Play(session, int(cmd.Int("session")), "red")
