@@ -166,16 +166,20 @@ func main() {
 			&cli.IntFlag{
 				Name:    "session",
 				Aliases: []string{"s"},
-				// Minutes
-				Value: 25,
-				Usage: "Time duration(mins) for each session",
+				Value:   25,
+				Usage:   "Time duration(mins) for each session",
 			},
 			&cli.IntFlag{
 				Name:    "rest",
 				Aliases: []string{"b"},
-				// Minutes
-				Value: 5,
-				Usage: "Time duration(mins) for rest time",
+				Value:   5,
+				Usage:   "Time duration(mins) for rest time",
+			},
+			&cli.IntFlag{
+				Name:    "cycle",
+				Aliases: []string{"c"},
+				Value:   1,
+				Usage:   "Total pomodoro sessions",
 			},
 		},
 		Action: func(context.Context, *cli.Command) error {
@@ -199,10 +203,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Stop if the program if its only asking help
+	// Stop if the program if its only asking help or incorrect args
 	if len(os.Args) > 1 {
 		arg := os.Args[1]
-		if arg == "-h" || arg == "--help" {
+		if arg != "-h" || arg != "--help" {
 			return
 		}
 	}
