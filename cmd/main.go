@@ -177,7 +177,7 @@ func main() {
 			},
 			&cli.IntFlag{
 				Name:    "rest",
-				Aliases: []string{"b"},
+				Aliases: []string{"r"},
 				Validator: func(val int64) error {
 					if val > 240 {
 						return fmt.Errorf("Error: Value exceeds the limit 240!")
