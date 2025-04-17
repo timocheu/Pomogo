@@ -98,17 +98,15 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 			case "p":
 				// Display Option to resume
 				fmt.Println("\n▄▄▄ [PAUSED] ▄▄▄")
-				fmt.Println("\033[31m[Y]\033[0m - Resume")
+				fmt.Println("\033[31m[Q]\033[0m - Resume")
 
-				// Block the ticker
-				// Ask for input
-				var cmd string
-				fmt.Scan(&cmd)
-				if strings.TrimSpace(strings.ToLower(cmd)) == "y" {
-					fmt.Println("Resuming...")
-					break
-				} else {
-					fmt.Println("Error: Invalid command")
+				for {
+					if <-option == "q" {
+						fmt.Println("Resuming...")
+						break
+					} else {
+						fmt.Println("Error: Invalid command")
+					}
 				}
 			}
 		default:
