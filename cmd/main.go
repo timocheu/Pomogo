@@ -166,20 +166,37 @@ func main() {
 			&cli.IntFlag{
 				Name:    "session",
 				Aliases: []string{"s"},
-				Value:   25,
-				Usage:   "Time duration(mins) for each session",
+				Validator: func(val int64) error {
+					if val > 240 {
+						return fmt.Errorf("Error: Value exceeds the limit 240!")
+					}
+					return nil
+				},
+				Value: 25,
+				Usage: "Time duration(mins) for each session",
 			},
 			&cli.IntFlag{
 				Name:    "rest",
 				Aliases: []string{"b"},
-				Value:   5,
-				Usage:   "Time duration(mins) for rest time",
+				Validator: func(val int64) error {
+					if val > 240 {
+						return fmt.Errorf("Error: Value exceeds the limit 240!")
+					}
+					return nil
+				},
+				Value: 5,
+				Usage: "Time duration(mins) for rest time",
 			},
 			&cli.IntFlag{
 				Name:    "cycle",
 				Aliases: []string{"c"},
 				Value:   1,
-
+				Validator: func(val int64) error {
+					if val > 8 {
+						return fmt.Errorf("Error: Limit exceeds the cycle limit 8!")
+					}
+					return nil
+				},
 				Usage: "Total pomodoro sessions",
 			},
 		},
