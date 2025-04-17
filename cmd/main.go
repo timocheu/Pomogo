@@ -102,6 +102,10 @@ func Play(progressBar *Session) {
 	for i := 0; i < int(progressBar.duration)*60; i++ {
 		select {
 		case cmd := <-option:
+			// Offset by 1 everytime we get an option, since it consume 1 loop
+			// for every input.
+			i--
+
 			switch cmd {
 			case "q":
 				// Display Option to resume
@@ -130,6 +134,8 @@ func Play(progressBar *Session) {
 				timeSession = time.Time{}
 				i = 0
 				fmt.Println("Reset successful...")
+			default:
+				EraseLines(1)
 			}
 		default:
 			// Add second to the timer
