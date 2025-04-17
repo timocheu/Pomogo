@@ -13,12 +13,28 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+type Session struct {
+	session  *progressbar.ProgressBar
+	name     string
+	color    string
+	duration int64
+}
+
+func NewSession(bar *progressbar.ProgressBar, name, color string, duration int64) *Session {
+	return &Session{
+		session:  bar,
+		name:     name,
+		color:    color,
+		duration: duration,
+	}
+}
+
 // The Duration is in "Minutes"
-func NewSession(duration int) *progressbar.ProgressBar {
+func NewPomodoro(duration int64) *progressbar.ProgressBar {
 	// Convert duration into seconds
 	// We want to update the bar by every second, so we have to
 	//   multiply it by second
-	session := progressbar.NewOptions(duration*60,
+	session := progressbar.NewOptions(int(duration*60),
 		progressbar.OptionUseANSICodes(false),
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionSetWidth(30),
@@ -41,11 +57,11 @@ func NewSession(duration int) *progressbar.ProgressBar {
 }
 
 // The Duration is in "Minutes"
-func NewBreak(duration int) *progressbar.ProgressBar {
+func NewRest(duration int64) *progressbar.ProgressBar {
 	// Convert duration into seconds
 	// We want to update the bar by every second, so we have to
 	//   multiply it by second
-	session := progressbar.NewOptions(duration*60,
+	session := progressbar.NewOptions(int(duration*60),
 		progressbar.OptionUseANSICodes(false),
 		progressbar.OptionEnableColorCodes(true),
 		progressbar.OptionSetWidth(10),
@@ -68,7 +84,7 @@ func NewBreak(duration int) *progressbar.ProgressBar {
 }
 
 // Duration is in "MINUTES"
-func Play(bar *progressbar.ProgressBar, duration int, color string) {
+func Play(progressBar *Session) {
 	// blank time 00:00:00
 	timeSession := time.Time{}
 	option := make(chan string)
@@ -83,7 +99,7 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 		}
 	}()
 
-	for i := 0; i < duration*60; i++ {
+	for i := 0; i < int(progressBar.duration)*60; i++ {
 		select {
 		case cmd := <-option:
 			switch cmd {
@@ -110,7 +126,7 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 				fmt.Println("Canceled...")
 				return
 			case "e":
-				bar.Reset()
+				progressBar.session.Reset()
 				timeSession = time.Time{}
 				i = 0
 				fmt.Println("Reset successful...")
@@ -121,8 +137,9 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 
 			minutes := int(timeSession.Minute())
 			seconds := int(timeSession.Second())
-			bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] %s", color, minutes, seconds))
-			bar.Add(1)
+			progressBar.session.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] %s",
+				progressBar.color, minutes, seconds, progressBar.name))
+			progressBar.session.Add(1)
 			time.Sleep(time.Second)
 		}
 	}
@@ -185,10 +202,10 @@ func main() {
 	}
 
 	// Create a new session && rest
-	session := NewSession(int(cmd.Int("session")))
-	rest := NewBreak(int(cmd.Int("rest")))
+	pomodoro := NewSession(NewPomodoro(cmd.Int("session")), "session", "red", cmd.Int("session"))
+	rest := NewSession(NewRest(cmd.Int("rest")), "rest", "blue", cmd.Int("rest"))
 
 	// Play
-	Play(session, int(cmd.Int("session")), "red")
-	Play(rest, int(cmd.Int("rest")), "blue")
+	Play(pomodoro)
+	Play(rest)
 }
