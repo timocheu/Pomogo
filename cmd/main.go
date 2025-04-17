@@ -94,10 +94,16 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 
 				for {
 					if <-option == "r" {
-						fmt.Println("Resuming...")
+						for i := 1; i <= 3; i++ {
+							EraseLines(1)
+							fmt.Println("Resuming in... ", i)
+
+							time.Sleep(time.Second)
+						}
+						EraseLines(5)
 						break
 					} else {
-						fmt.Println("Error: Invalid command")
+						EraseLines(1)
 					}
 				}
 			case "w":
@@ -120,6 +126,13 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 			time.Sleep(time.Second)
 		}
 
+	}
+}
+
+// Erase the lines in the terminal in upward motion
+func EraseLines(n int) {
+	for i := 0; i < n; i++ {
+		fmt.Print("\033[A\033[2K")
 	}
 }
 
