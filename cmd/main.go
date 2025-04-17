@@ -87,27 +87,27 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 		select {
 		case cmd := <-option:
 			switch cmd {
-			case "r":
-				bar.Reset()
-				timeSession = time.Time{}
-				i = 0
-				fmt.Println("Reset successful...")
-			case "c":
-				fmt.Println("Canceled...")
-				return
-			case "p":
+			case "q":
 				// Display Option to resume
 				fmt.Println("\n▄▄▄ [PAUSED] ▄▄▄")
-				fmt.Println("\033[31m[Q]\033[0m - Resume")
+				fmt.Println("\033[31m[R]\033[0m - Resume")
 
 				for {
-					if <-option == "q" {
+					if <-option == "r" {
 						fmt.Println("Resuming...")
 						break
 					} else {
 						fmt.Println("Error: Invalid command")
 					}
 				}
+			case "w":
+				fmt.Println("Canceled...")
+				return
+			case "e":
+				bar.Reset()
+				timeSession = time.Time{}
+				i = 0
+				fmt.Println("Reset successful...")
 			}
 		default:
 			// Add second to the timer
@@ -117,10 +117,10 @@ func Play(bar *progressbar.ProgressBar, duration int, color string) {
 			s := int(timeSession.Second())
 			bar.Describe(fmt.Sprintf("[[%s]%02dm, %02ds[reset]] Session", color, m, s))
 			bar.Add(1)
+			time.Sleep(time.Second)
 		}
-		time.Sleep(time.Second)
-	}
 
+	}
 }
 
 func main() {
@@ -151,9 +151,9 @@ func main() {
 			fmt.Println("▐▌ ▐▌   ▝▚▄▞▘▐▌  ▐▌▝▚▄▞▘▝▚▄▞▘▝▚▄▞▘ ")
 			fmt.Println("▗▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄\n")
 
-			fmt.Println("\033[31m[P]\033[0m - Pause")
-			fmt.Println("\033[34m[C]\033[0m - Cancel")
-			fmt.Println("[R] - Reset")
+			fmt.Println("\033[31m[Q]\033[0m - Pause")
+			fmt.Println("\033[34m[W]\033[0m - Cancel")
+			fmt.Println("[E] - Reset")
 			fmt.Println("--- --- --- --- --- --- --- ")
 
 			return nil
