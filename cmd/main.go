@@ -179,7 +179,8 @@ func main() {
 				Name:    "cycle",
 				Aliases: []string{"c"},
 				Value:   1,
-				Usage:   "Total pomodoro sessions",
+
+				Usage: "Total pomodoro sessions",
 			},
 		},
 		Action: func(context.Context, *cli.Command) error {
@@ -203,19 +204,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Stop if the program if its only asking help or incorrect args
+	// Stop if the program if its only asking help
 	if len(os.Args) > 1 {
 		arg := os.Args[1]
-		if arg != "-h" || arg != "--help" {
+		if arg == "help" {
 			return
 		}
 	}
 
-	// Create a new session && rest
-	pomodoro := NewSession(NewPomodoro(cmd.Int("session")), "session", "red", cmd.Int("session"))
-	rest := NewSession(NewRest(cmd.Int("rest")), "rest", "blue", cmd.Int("rest"))
+	for i := 1; i <= int(cmd.Int("cycle")); i++ {
+		fmt.Println("Cycle: ", i)
+		// Create a new session && rest
+		pomodoro := NewSession(NewPomodoro(cmd.Int("session")), "session", "red", cmd.Int("session"))
+		rest := NewSession(NewRest(cmd.Int("rest")), "rest", "blue", cmd.Int("rest"))
 
-	// Play
-	Play(pomodoro)
-	Play(rest)
+		// Play
+		Play(pomodoro)
+		Play(rest)
+	}
+
 }
