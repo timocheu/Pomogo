@@ -7,7 +7,10 @@ all: $(BINARY)
 
 $(BINARY): 
 	go mod tidy
-	$(BUILD) $(GFLAGS) -o $@
+	go install
 
 clean: 
 	rm -rf ./$(BINARY)
+
+build:
+	$(BUILD) $(GFLAGS) -o $@
