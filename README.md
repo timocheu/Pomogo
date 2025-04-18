@@ -2,8 +2,9 @@
 A pomodoro cli-app made in **Go**. I'm tired of using pomodoro web-app because it needs internet connection. I built pomogo for offline scenario.
 
 # Installation (LINUX) ⚡
-Get, [download](https://go.dev/) and install **Go**. Version `1.24` or higher is required.
-Second, 
+### Requirements
+1. Get, [download](https://go.dev/) and install **Go**. Version `1.24` or higher is required.
+2. Second, make sure you already installed `make`
 
 Clone the repo and build the source file using `make`
 ```
