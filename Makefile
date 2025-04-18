@@ -1,5 +1,4 @@
 GFLAGS=-v -trimpath
-MAIN=./cmd
 BUILD=go build
 
 BINARY=pomogo
@@ -8,7 +7,7 @@ all: $(BINARY)
 
 $(BINARY): 
 	go mod tidy
-	$(BUILD) $(GFLAGS) -o $@ $(MAIN) 
+	$(BUILD) $(GFLAGS) -o $@
 
 clean: 
 	rm -rf ./$(BINARY)

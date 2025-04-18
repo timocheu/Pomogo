@@ -1,4 +1,4 @@
-module github.com/timocheu/Pomogo
+module github.com/timocheu/pomogo
 
 go 1.24.0
 
